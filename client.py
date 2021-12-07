@@ -1,6 +1,5 @@
 from typing import Any
 import requests
-import re
 
 BASE_URL = 'https://api.notion.com/v1/'
 VERSION_HEADER = 'Notion-Version'
@@ -14,7 +13,6 @@ class NotionClient:
         self.session = requests.Session()
         self.session.headers.update({'Authorization': 'Bearer ' + self.token})
         self.session.headers.update({VERSION_HEADER: VERSION_VALUE})
-        print(self.session.headers)
         self.base_url = BASE_URL
 
     def __getattribute__(self, name: str) -> Any:

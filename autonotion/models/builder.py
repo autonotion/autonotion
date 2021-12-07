@@ -1,7 +1,8 @@
 import copy
 from typing import get_type_hints, Dict
+from autonotion.models.blocks import TextBlock
 
-from autonotion.models.pages import Page, Icon, PageParent, DatabaseParent
+from autonotion.models.pages import Page, Icon, PageParent, DatabaseParent, WorkspaceParent
 from autonotion.models.database import Database
 from autonotion.models.properties import (
     BaseProperty,
@@ -65,6 +66,32 @@ class PageBuilder(NotionObjectBuilder):
         return page
 
 
+class DatabaseBuilder(NotionObjectBuilder):
+    """
+    Builds a database.
+    """
+    @classmethod
+    def build(cls, data: RawData) -> Database:
+        """
+        Builds a database.
+        """
+        _raw_data = {}
+        _non_primitives = {}
+        for k, v in get_type_hints(DATABASE_TYPE).items():
+            if not k.startswith('_'):
+                if isinstance(v, type):
+                    _raw_data[k] = data[k]
+                else:
+                    _non_primitives[k] = copy.deepcopy(data[k])
+                    del data[k]
+
+        database = DATABASE_TYPE.parse_obj(_raw_data)
+        database.parent = ParentBuilder.build(_non_primitives['parent'])
+        database.properties = PropertiesBuilder.build(_non_primitives['properties'])
+        database.title = PropertyBuilder.build("title", _non_primitives['title'])
+        return database
+
+
 class IconBuilder(NotionObjectBuilder):
     """
     Builds an icon.
@@ -90,7 +117,8 @@ class ParentBuilder(NotionObjectBuilder):
         """
         class_ = {
             'page_id': PageParent,
-            'database_id': DatabaseParent
+            'database_id': DatabaseParent,
+            'workspace': WorkspaceParent
         }
         return class_[data['type']].parse_obj(data)
 
@@ -123,9 +151,21 @@ class PropertyBuilder(NotionObjectBuilder):
             'formula': FormulaProperty,
             'created_time': CreatedTime,
             'people': PeopleProperty,
-            'title': TitleProperty
+            'title': TitleProperty,
+            'text': TextBlock
         }
-        _type = data['type']
-        _class = class_types[_type]
-        data.update({'name': name})
-        return _class.parse_obj(data)
+
+        if isinstance(data, list):
+            instances = []
+            for row in data:
+                _type = row['type']
+                _class = class_types[_type]
+                row.update({'name': name})
+                instances.append(_class.parse_obj(row))
+            return instances
+
+        else:
+            _type = data['type']
+            _class = class_types[_type]
+            data.update({'name': name})
+            return _class.parse_obj(data)

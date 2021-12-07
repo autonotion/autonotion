@@ -19,7 +19,7 @@ from autonotion.models.properties import (
 )
 
 
-def test_page_builder_will_create_page_from_api_json(page):
+def test_page_builder_will_create_page_from_api_response(page):
     raw_data = json.loads(page)
 
     expected_page = Page(
@@ -124,5 +124,4 @@ def test_page_builder_will_create_page_from_api_json(page):
     )
 
     built_page = PageBuilder.build(raw_data)
-    print(built_page.json(), expected_page.json(), sep="\n\n")
     assert built_page == expected_page

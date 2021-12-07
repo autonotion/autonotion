@@ -48,11 +48,16 @@ class BaseProperty(BaseModel):
 
 
 class Formula(BaseModel):
-    type: str
+    type: typing.Optional[str]
     string: typing.Optional[str]
     number: typing.Optional[float] = 0.0
     boolean: typing.Optional[bool] = False
     date: typing.Optional[datetime]
+    expression: typing.Optional[str]
+
+
+class FormulaProperty(BaseProperty):
+    formula: typing.Optional[Formula]
 
 
 class SelectOption(BaseModel):
@@ -61,16 +66,20 @@ class SelectOption(BaseModel):
     color: typing.Optional[str] = ColorEnum.DEFAULT
 
 
+class OptionGroup(BaseModel):
+    options: typing.List[SelectOption]
+
+
 class SelectProperty(BaseProperty):
-    select: typing.Optional[SelectOption]
+    select: typing.Optional[typing.Union[SelectOption, OptionGroup]]
 
 
 class MultiSelectProperty(BaseProperty):
-    multi_select: typing.Optional[typing.List[SelectOption]]
+    multi_select: typing.Optional[typing.Union[typing.List[SelectOption], OptionGroup]]
 
 
 class Date(BaseModel):
-    start: date
+    start: typing.Optional[date]
     end: typing.Optional[date] = None
 
 
@@ -79,11 +88,7 @@ class DateProperty(BaseProperty):
 
 
 class CreatedTime(BaseProperty):
-    created_time: datetime
-
-
-class FormulaProperty(BaseProperty):
-    formula: typing.Optional[Formula]
+    created_time: typing.Union[datetime, dict]
 
 
 class File(BaseModel):
@@ -100,8 +105,8 @@ class People(BaseModel):
 
 
 class PeopleProperty(BaseProperty):
-    people: typing.Optional[typing.List[People]]
+    people: typing.Optional[typing.Union[typing.List[People], dict]]
 
 
 class TitleProperty(BaseProperty):
-    title: typing.List[TextBlock]
+    title: typing.Union[typing.List[TextBlock], dict]

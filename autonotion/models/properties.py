@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import typing
 from pydantic import BaseModel
 from enum import Enum
@@ -46,6 +46,12 @@ class BaseProperty(BaseModel):
     name: typing.Optional[str] = None
     type: str
 
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+            date: lambda v: v.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+        }
+
 
 class Formula(BaseModel):
     type: typing.Optional[str]
@@ -53,10 +59,22 @@ class Formula(BaseModel):
     number: typing.Optional[float] = 0.0
     boolean: typing.Optional[bool] = False
     date: typing.Optional[datetime]
-    expression: typing.Optional[str]
+
+    def __init__(__pydantic_self__, **data: typing.Any) -> None:
+        super().__init__(**data)
+        for key in set(dict(__pydantic_self__).keys()) - set(data.keys()):
+            delattr(__pydantic_self__, key)
+
+
+class FormulaExpression(BaseModel):
+    expression: str
 
 
 class FormulaProperty(BaseProperty):
+    formula: typing.Optional[FormulaExpression]
+
+
+class FormulaPropertyInstance(BaseProperty):
     formula: typing.Optional[Formula]
 
 
@@ -84,6 +102,10 @@ class Date(BaseModel):
 
 
 class DateProperty(BaseProperty):
+    date: dict
+
+
+class DatePropertyInstance(BaseProperty):
     date: typing.Optional[Date]
 
 

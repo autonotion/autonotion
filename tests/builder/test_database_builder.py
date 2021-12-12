@@ -1,15 +1,14 @@
 import json
-from datetime import datetime, timezone, date, tzinfo
-from autonotion.models.blocks import Annotation, TextBlock
+from datetime import datetime, timezone
+from autonotion.models.blocks import Annotation, TextBlock, TextBlockContent
 from autonotion.models.database import Database
 from autonotion.models.builder import DatabaseBuilder
 from autonotion.models.pages import WorkspaceParent
-from autonotion.models.properties import TitleProperty
+from autonotion.models.properties import FormulaExpression, TitleProperty
 
 from autonotion.models.properties import (
     CreatedTime,
     DateProperty,
-    Formula,
     FormulaProperty,
     MultiSelectProperty,
     PeopleProperty,
@@ -32,10 +31,14 @@ def test_database_builder_create_database_from_api_response(database):
         last_edited_time=datetime(2021, 12, 6, 23, 47, 0, tzinfo=timezone.utc),
         title=[
             TextBlock(
-                    type='text',
-                    annotations=Annotation(),
-                    plain_text='API Test Board',
-                    href=None
+                type='text',
+                annotations=Annotation(),
+                plain_text='API Test Board',
+                href=None,
+                text=TextBlockContent(
+                    content="API Test Board",
+                    link=None
+                )
             )
         ],
         properties=[
@@ -43,7 +46,7 @@ def test_database_builder_create_database_from_api_response(database):
                 type='formula',
                 id='id',
                 name='Formula 1',
-                formula=Formula(
+                formula=FormulaExpression(
                     expression='formatDate(prop("Due date"), "DD/MM/YY HH:mm")'
                 )
             ),

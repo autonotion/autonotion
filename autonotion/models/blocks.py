@@ -12,8 +12,14 @@ class Annotation(BaseModel):
     color: Optional[str] = "default"
 
 
+class TextBlockContent(BaseModel):
+    content: str
+    link: Optional[pydantic.HttpUrl] = None
+
+
 class TextBlock(BaseModel):
     type: str = 'text'
+    text: TextBlockContent
     annotations: Optional[Annotation] = None
     plain_text: Optional[str] = ""
     href: Optional[pydantic.HttpUrl] = None

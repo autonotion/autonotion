@@ -2,14 +2,14 @@ import json
 from datetime import datetime, timezone, date
 from autonotion.models.builder import PageBuilder
 from autonotion.models.pages import DatabaseParent, Page
-from autonotion.models.blocks import TextBlock, Annotation
+from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
 
 from autonotion.models.properties import (
     CreatedTime,
     Date,
     DateProperty,
     Formula,
-    FormulaProperty,
+    FormulaPropertyInstance,
     MultiSelectProperty,
     People,
     PeopleProperty,
@@ -35,7 +35,7 @@ def test_page_builder_will_create_page_from_api_response(page):
             database_id='id'
         ),
         properties=[
-            FormulaProperty(
+            FormulaPropertyInstance(
                 type='formula',
                 id='id',
                 name='Formula 1',
@@ -115,7 +115,11 @@ def test_page_builder_will_create_page_from_api_response(page):
                         type='text',
                         annotations=Annotation(),
                         plain_text="This is a test for integration library for Notion API",
-                        href=None
+                        href=None,
+                        text=TextBlockContent(
+                            content="This is a test for integration library for Notion API",
+                            link=None
+                        )
                     )
                 ]
             )

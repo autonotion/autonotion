@@ -1,13 +1,13 @@
 import datetime
 import json
-from autonotion.models.blocks import TextBlock, Annotation
+from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
 from autonotion.models.builder import PropertyBuilder
 from autonotion.models.properties import (
     CreatedTime,
     Date,
-    DateProperty,
+    DatePropertyInstance,
     Formula,
-    FormulaProperty,
+    FormulaPropertyInstance,
     MultiSelectProperty,
     People,
     PeopleProperty,
@@ -18,7 +18,7 @@ from autonotion.models.properties import (
 
 
 def test_property_builder_should_be_able_to_build_formula():
-    expected = FormulaProperty(
+    expected = FormulaPropertyInstance(
         type='formula',
         id='id',
         name='Formula 1',
@@ -37,7 +37,7 @@ def test_property_builder_should_be_able_to_build_formula():
             }
         }
     """)
-    assert PropertyBuilder.build('Formula 1', formula) == expected
+    assert PropertyBuilder.build('Formula 1', formula, FormulaPropertyInstance) == expected
 
 
 def test_property_builder_should_be_able_to_build_multiselect():
@@ -88,7 +88,7 @@ def test_property_builder_should_be_able_to_build_multiselect():
         }
     """)
 
-    assert PropertyBuilder.build('Labels', multiselect) == expected
+    assert PropertyBuilder.build('Labels', multiselect, MultiSelectProperty) == expected
 
 
 def test_property_builder_should_be_able_to_build_creation_time():
@@ -105,7 +105,7 @@ def test_property_builder_should_be_able_to_build_creation_time():
             "created_time": "2021-12-06T17:41:00.000Z"
         }
     """)
-    assert PropertyBuilder.build('Created time', creation_time) == expected
+    assert PropertyBuilder.build('Created time', creation_time, CreatedTime) == expected
 
 
 def test_property_builder_should_be_able_to_build_people_property():
@@ -142,7 +142,7 @@ def test_property_builder_should_be_able_to_build_people_property():
             ]
         }
         """)
-    assert PropertyBuilder.build('Assign', people) == expected
+    assert PropertyBuilder.build('Assign', people, PeopleProperty) == expected
 
 
 def test_property_builder_should_be_able_to_build_select_property():
@@ -169,11 +169,11 @@ def test_property_builder_should_be_able_to_build_select_property():
         }
     """)
 
-    assert PropertyBuilder.build('Status', select) == expected
+    assert PropertyBuilder.build('Status', select, SelectProperty) == expected
 
 
 def test_property_builder_should_build_date_property():
-    expected = DateProperty(
+    expected = DatePropertyInstance(
         id='id',
         name='Due date',
         type='date',
@@ -194,7 +194,7 @@ def test_property_builder_should_build_date_property():
             }
     """)
 
-    assert PropertyBuilder.build('Due date', date) == expected
+    assert PropertyBuilder.build('Due date', date, DatePropertyInstance) == expected
 
 
 def test_property_builder_should_build_title_property():
@@ -207,7 +207,11 @@ def test_property_builder_should_build_title_property():
                 type='text',
                 annotations=Annotation(),
                 plain_text="This is a test for integration library for Notion API",
-                href=None
+                href=None,
+                text=TextBlockContent(
+                    content="This is a test for integration library for Notion API",
+                    link=None
+                )
             )
         ]
     )
@@ -237,4 +241,4 @@ def test_property_builder_should_build_title_property():
             ]
         }""")
 
-    assert PropertyBuilder.build('Name', title) == expected
+    assert PropertyBuilder.build('Name', title, TitleProperty) == expected

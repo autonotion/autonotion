@@ -3,7 +3,12 @@
     "id": "id",
     "created_time": "2021-12-06T17:41:00.000Z",
     "last_edited_time": "2021-12-06T19:12:00.000Z",
-    "cover": null,
+    "cover": {
+        "type": "external",
+        "external": {
+            "url": "https://www.notion.so/images/page-cover/nasa_space_shuttle_columbia_and_sunrise.jpg"
+        }
+    },
     "icon": null,
     "parent": {
         "type": "database_id",

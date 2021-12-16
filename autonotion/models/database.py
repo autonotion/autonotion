@@ -3,8 +3,8 @@ from datetime import datetime
 from pydantic import BaseModel
 from autonotion.models.blocks import TextBlock
 
-from autonotion.models.pages import Icon, PageParent, WorkspaceParent
-from autonotion.models.properties import BaseProperty, File
+from autonotion.models.base import BaseParentNotionObject
+from autonotion.models.properties import BaseProperty, File, Icon
 
 
 class Database(BaseModel):
@@ -17,7 +17,7 @@ class Database(BaseModel):
     title: Optional[List[TextBlock]]
     icon: Optional[Union[Icon, File]]
     properties: Optional[List[BaseProperty]]
-    parent: Optional[Union[PageParent, WorkspaceParent]]
+    parent: Optional[BaseParentNotionObject]
     url: str
 
     def dict(self, *args, **kwargs):

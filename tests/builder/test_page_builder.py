@@ -1,13 +1,16 @@
 import json
 from datetime import datetime, timezone, date
 from autonotion.models.builder import PageBuilder
-from autonotion.models.pages import DatabaseParent, Page
+from autonotion.models.pages import Page
+from autonotion.models.parents import DatabaseParent
 from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
 
 from autonotion.models.properties import (
     CreatedTime,
     Date,
     DateProperty,
+    CoverProperty,
+    External,
     Formula,
     FormulaPropertyInstance,
     MultiSelectProperty,
@@ -29,7 +32,12 @@ def test_page_builder_will_create_page_from_api_response(page):
         last_edited_time=datetime(2021, 12, 6, 19, 12, 0, tzinfo=timezone.utc),
         archived=False,
         icon=None,
-        # cover=None,
+        cover=CoverProperty(
+            type='external',
+            external=External(
+                url="https://www.notion.so/images/page-cover/nasa_space_shuttle_columbia_and_sunrise.jpg"
+            )
+        ),
         parent=DatabaseParent(
             type='database_id',
             database_id='id'
@@ -83,7 +91,8 @@ def test_page_builder_will_create_page_from_api_response(page):
                         avatar_url='https://gravatar.com/avatar/',
                         person={
                             'email': 'jhondoe@autonotion.com'
-                        }
+                        },
+                        type='person'
                     )
                 ]
             ),
@@ -128,4 +137,5 @@ def test_page_builder_will_create_page_from_api_response(page):
     )
 
     built_page = PageBuilder.build(raw_data)
+    print(built_page.json())
     assert built_page == expected_page

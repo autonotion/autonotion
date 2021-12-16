@@ -113,17 +113,10 @@ class CreatedTime(BaseProperty):
     created_time: typing.Union[datetime, dict]
 
 
-class File(BaseModel):
-    type: str
-    url: str
-    expiry_time: typing.Optional[datetime]
-
-
-class People(BaseModel):
-    id: str
-    name: str
+class People(BaseProperty):
     avatar_url: typing.Optional[str] = None
     person: typing.Optional[typing.Dict[str, str]] = None
+    object: typing.Optional[str] = "user"
 
 
 class PeopleProperty(BaseProperty):
@@ -132,3 +125,44 @@ class PeopleProperty(BaseProperty):
 
 class TitleProperty(BaseProperty):
     title: typing.Union[typing.List[TextBlock], dict]
+
+
+class IconEmoji(BaseModel):
+    emoji: str
+
+
+class External(BaseModel):
+    url: str
+
+
+class File(BaseModel):
+    url: str
+    type: typing.Optional[str]
+    expiry_time: typing.Optional[datetime]
+
+    def __init__(__pydantic_self__, **data: typing.Any) -> None:
+        super().__init__(**data)
+        for key in set(dict(__pydantic_self__).keys()) - set(data.keys()):
+            delattr(__pydantic_self__, key)
+
+
+class Icon(BaseModel):
+    type: typing.Optional[str]
+    file: typing.Optional[File]
+    emoji: typing.Optional[IconEmoji]
+
+    def __init__(__pydantic_self__, **data: typing.Any) -> None:
+        super().__init__(**data)
+        for key in set(dict(__pydantic_self__).keys()) - set(data.keys()):
+            delattr(__pydantic_self__, key)
+
+
+class CoverProperty(BaseModel):
+    type: str
+    file: typing.Optional[File]
+    external: typing.Optional[External]
+
+    def __init__(__pydantic_self__, **data: typing.Any) -> None:
+        super().__init__(**data)
+        for key in set(dict(__pydantic_self__).keys()) - set(data.keys()):
+            delattr(__pydantic_self__, key)

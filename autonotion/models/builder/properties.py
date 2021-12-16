@@ -1,8 +1,8 @@
 from typing import Dict
 
-from autonotion.models.pages import Icon, PageParent, DatabaseParent, WorkspaceParent
-
-from autonotion.models.properties import BaseProperty
+from autonotion.models.pages import Icon
+from autonotion.models.parents import PageParent, DatabaseParent, WorkspaceParent
+from autonotion.models.properties import BaseProperty, CoverProperty
 
 from .utils import NotionObjectBuilder, RawData
 
@@ -74,3 +74,17 @@ class PropertyBuilder(NotionObjectBuilder):
             _class = builder_class
             data.update({'name': name})
             return _class.parse_obj(data)
+
+
+class CoverBuilder(NotionObjectBuilder):
+    """
+    Builds a cover.
+    """
+    @classmethod
+    def build(cls, data: RawData) -> str:
+        """
+        Builds a cover.
+        """
+        if not data:
+            return None
+        return CoverProperty.parse_obj(data)

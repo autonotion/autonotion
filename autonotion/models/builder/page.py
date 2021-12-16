@@ -5,7 +5,7 @@ from autonotion.models.pages import Page
 from autonotion.models.blocks import TextBlock
 
 from .utils import NotionObjectBuilder, PAGE_TYPE, RawData
-from .properties import PropertiesBuilder, IconBuilder, ParentBuilder
+from .properties import CoverBuilder, PropertiesBuilder, IconBuilder, ParentBuilder
 
 from autonotion.models.properties import (
     SelectProperty,
@@ -55,4 +55,5 @@ class PageBuilder(NotionObjectBuilder):
             _non_primitives['properties'],
             builder_class_map=BUILDER_CLASSES
         )
+        page.cover = CoverBuilder.build(_non_primitives['cover'])
         return page

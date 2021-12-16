@@ -1,45 +1,19 @@
 import typing
 from datetime import datetime, date, timezone
 from pydantic import BaseModel, validator
-
-from autonotion.models.properties import BaseProperty
-
-
-class Icon(BaseModel):
-    type: str
-    emoji: str
-
-
-class BaseParent(BaseModel):
-    type: str
-
-
-class PageParent(BaseParent):
-    page_id: str
-
-
-class DatabaseParent(BaseParent):
-    database_id: str
-
-
-class WorkspaceParent(BaseParent):
-    workspace: bool
+from autonotion.models.base import BaseParentNotionObject
+from autonotion.models.properties import BaseProperty, CoverProperty, Icon
 
 
 class Page(BaseModel):
     object: str
     id: str
+    cover: typing.Optional[CoverProperty]
     created_time: datetime
     last_edited_time: datetime
     archived: bool = False
-    icon: typing.Optional[Icon] = None
-    parent: typing.Optional[
-                typing.Union[
-                    PageParent,
-                    DatabaseParent,
-                    WorkspaceParent
-                ]
-            ]
+    icon: typing.Optional[Icon]
+    parent: typing.Optional[BaseParentNotionObject]
     properties: typing.Optional[typing.List[BaseProperty]]
     url: str
 
@@ -66,5 +40,3 @@ class Page(BaseModel):
                 prop.pop('name'): prop for prop in _dict['properties']
             }
         return _dict
-
-    

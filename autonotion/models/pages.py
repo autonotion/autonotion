@@ -1,8 +1,8 @@
 import typing
 from datetime import datetime, date, timezone
 from pydantic import BaseModel, validator
-from autonotion.models.base import BaseParentNotionObject
-from autonotion.models.properties import BaseProperty, CoverProperty, Icon
+from autonotion.models.base import BaseParentNotionObject, BaseNotionProperty
+from autonotion.models.properties import CoverProperty, Icon
 
 
 class Page(BaseModel):
@@ -14,7 +14,7 @@ class Page(BaseModel):
     archived: bool = False
     icon: typing.Optional[Icon]
     parent: typing.Optional[BaseParentNotionObject]
-    properties: typing.Optional[typing.List[BaseProperty]]
+    properties: typing.Optional[typing.List[BaseNotionProperty]]
     url: str
 
     class Config:

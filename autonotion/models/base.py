@@ -1,7 +1,18 @@
+import typing
+from datetime import datetime, date, timezone
+
 from pydantic import BaseModel
 
 
-class BaseTypedNotionObject(BaseModel):
+class BaseNotionModel(BaseModel):
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+            date: lambda v: v.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+        }
+
+
+class BaseTypedNotionObject(BaseNotionModel):
     """
     Base class for all typed notion objects, it means object contains a property
     called `type` which is always string and it's required.
@@ -9,14 +20,14 @@ class BaseTypedNotionObject(BaseModel):
     type: str
 
 
-class BaseIDNotionObject(BaseModel):
+class BaseIDNotionObject(BaseNotionModel):
     """
     Base class for all typed notion objects, it means object contains a property
     called `id` which is always string and it's required."""
     id: str
 
 
-class ParentableNotionObject(BaseModel):
+class ParentableNotionObject(BaseNotionModel):
     """
     Base class for all notion objects which can have a parent. As API v2.0 for Notion
     it's possible to have a notion object which is a child of a workspace, a database or
@@ -48,7 +59,7 @@ class BaseNotionProperty(BaseIDNotionObject, BaseTypedNotionObject):
 
 class BaseDatabaseProperty(BaseNotionProperty):
     """
-    As API v2.0 for Notion Database contains the properties that describes how pages that are 
+    As API v2.0 for Notion Database contains the properties that describes how pages that are
     contained in database will looks like."""
     pass
 
@@ -65,4 +76,21 @@ class BaseParentNotionObject(BaseTypedNotionObject):
     Base class representation for parents object. As API v2.0 for Notion
     it's possible to have a notion object which is a child of a workspace, a database or
     a page."""
+    pass
+
+
+class BaseTypeMultiValueNotionObject(BaseTypedNotionObject):
+    """
+    Base class for notion objects that can have multiple type values. As API v2.0 for Notion
+    formula is an example that may contain more than 1 type of value ."""
+    def __init__(__pydantic_self__, **data: typing.Any) -> None:
+        super().__init__(**data)
+        for key in set(dict(__pydantic_self__).keys()) - set(data.keys()):
+            delattr(__pydantic_self__, key)
+
+
+class BaseTypeMultiValueProperty(BaseTypeMultiValueNotionObject, BasePropertyInstance):
+    """
+    Base class for notion properties that can have multiple type values. As API v2.0 for Notion
+    formula is an example that may contain more than 1 type of value ."""
     pass

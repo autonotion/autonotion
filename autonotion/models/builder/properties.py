@@ -1,8 +1,9 @@
 from typing import Dict
 
+from autonotion.models.base import BaseNotionProperty
 from autonotion.models.pages import Icon
 from autonotion.models.parents import PageParent, DatabaseParent, WorkspaceParent
-from autonotion.models.properties import BaseProperty, CoverProperty
+from autonotion.models.properties import CoverProperty
 
 from .utils import NotionObjectBuilder, RawData
 
@@ -43,7 +44,10 @@ class PropertiesBuilder(NotionObjectBuilder):
     Builds properties.
     """
     @classmethod
-    def build(cls, data: RawData, builder_class_map: Dict[str, BaseProperty]) -> Dict[str, str]:
+    def build(
+            cls,
+            data: RawData,
+            builder_class_map: Dict[str, BaseNotionProperty]) -> Dict[str, str]:
         """
         Builds properties.
         """
@@ -59,7 +63,12 @@ class PropertyBuilder(NotionObjectBuilder):
     Builds a property.
     """
     @classmethod
-    def build(cls, name: str, data: RawData, builder_class: BaseProperty) -> BaseProperty:
+    def build(
+        cls,
+        name: str,
+        data: RawData,
+        builder_class: BaseNotionProperty
+    ) -> BaseNotionProperty:
         """
         Builds a property.
         """

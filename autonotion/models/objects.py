@@ -42,6 +42,14 @@ class OptionGroup(BaseNotionModel):
 class Date(BaseNotionModel):
     start: typing.Optional[date]
     end: typing.Optional[date] = None
+    time_zone: typing.Optional[str] = None
+
+    def dict(self, *args, **kwargs):
+        return {
+            "start": datetime.strftime(self.start, "%Y-%m-%d") if self.start else None,
+            "end": datetime.strftime(self.end, "%Y-%m-%d") if self.end else None,
+            "time_zone": self.time_zone,
+        }
 
 
 class IconEmoji(BaseNotionModel):
@@ -50,3 +58,8 @@ class IconEmoji(BaseNotionModel):
 
 class External(BaseNotionModel):
     url: str
+
+
+class File(BaseNotionModel):
+    url: str
+    expiry_time: typing.Optional[datetime]

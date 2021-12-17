@@ -10,7 +10,8 @@ from autonotion.models.objects import (
     OptionGroup,
     Date,
     IconEmoji,
-    External
+    External,
+    File
 )
 
 from autonotion.models.blocks import TextBlock
@@ -78,11 +79,6 @@ class PeopleProperty(BaseNotionProperty):
 
 class TitleProperty(BaseNotionProperty):
     title: typing.Union[typing.List[TextBlock], dict]
-
-
-class File(BaseTypeMultiValueNotionObject):
-    url: str
-    expiry_time: typing.Optional[datetime]
 
 
 class Icon(BaseTypeMultiValueNotionObject):

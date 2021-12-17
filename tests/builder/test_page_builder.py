@@ -137,5 +137,4 @@ def test_page_builder_will_create_page_from_api_response(page):
     )
 
     built_page = PageBuilder.build(raw_data)
-    print(built_page.json())
     assert built_page == expected_page

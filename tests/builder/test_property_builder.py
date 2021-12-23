@@ -1,7 +1,7 @@
 import datetime
 import json
 from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
-from autonotion.models.builder import PropertyBuilder
+from autonotion.builder import PropertyBuilder
 from autonotion.models.properties import (
     CreatedTime,
     Date,

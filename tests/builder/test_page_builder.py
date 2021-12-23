@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timezone, date
-from autonotion.models.builder import PageBuilder
+from autonotion.builder import PageBuilder
 from autonotion.models.pages import Page
 from autonotion.models.parents import DatabaseParent
 from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
@@ -8,8 +8,8 @@ from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
 from autonotion.models.properties import (
     CreatedTime,
     Date,
-    DateProperty,
     CoverProperty,
+    DatePropertyInstance,
     External,
     Formula,
     FormulaPropertyInstance,
@@ -106,7 +106,7 @@ def test_page_builder_will_create_page_from_api_response(page):
                     color='red',
                 )
             ),
-            DateProperty(
+            DatePropertyInstance(
                 id='id',
                 name='Due date',
                 type='date',

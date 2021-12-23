@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timezone
 from autonotion.models.blocks import Annotation, TextBlock, TextBlockContent
 from autonotion.models.database import Database
-from autonotion.models.builder import DatabaseBuilder
+from autonotion.builder import DatabaseBuilder
 from autonotion.models.parents import WorkspaceParent
 from autonotion.models.properties import FormulaExpression, TitleProperty
 

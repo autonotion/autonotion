@@ -2,7 +2,7 @@ from typing import Any
 import requests
 
 from autonotion.models import Database, Page
-from autonotion.models.builder import PageBuilder, DatabaseBuilder
+from autonotion.builder import PageBuilder, DatabaseBuilder
 
 BASE_URL = 'https://api.notion.com/v1/'
 VERSION_HEADER = 'Notion-Version'

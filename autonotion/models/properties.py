@@ -1,7 +1,18 @@
-from datetime import datetime, date, timezone
+from datetime import datetime
 import typing
-from pydantic import BaseModel
 from enum import Enum
+
+from autonotion.models.base import BaseTypeMultiValueNotionObject, BaseNotionProperty
+from autonotion.models.objects import (
+    Formula,
+    FormulaExpression,
+    SelectOption,
+    OptionGroup,
+    Date,
+    IconEmoji,
+    External,
+    File
+)
 
 from autonotion.models.blocks import TextBlock
 
@@ -28,107 +39,53 @@ class PropertyTypeEnum(Enum):
     LAST_EDITED_BY = "last_edited_by"
 
 
-class ColorEnum:
-    DEFAULT = "default"
-    GRAY = "gray"
-    BROWN = "brown"
-    RED = "red"
-    ORANGE = "orange"
-    YELLOW = "yellow"
-    GREEN = "green"
-    BLUE = "blue"
-    PURPLE = "purple"
-    PINK = "pink"
-
-
-class BaseProperty(BaseModel):
-    id: str
-    name: typing.Optional[str] = None
-    type: str
-
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z'),
-            date: lambda v: v.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
-        }
-
-
-class Formula(BaseModel):
-    type: typing.Optional[str]
-    string: typing.Optional[str]
-    number: typing.Optional[float] = 0.0
-    boolean: typing.Optional[bool] = False
-    date: typing.Optional[datetime]
-
-    def __init__(__pydantic_self__, **data: typing.Any) -> None:
-        super().__init__(**data)
-        for key in set(dict(__pydantic_self__).keys()) - set(data.keys()):
-            delattr(__pydantic_self__, key)
-
-
-class FormulaExpression(BaseModel):
-    expression: str
-
-
-class FormulaProperty(BaseProperty):
+class FormulaProperty(BaseNotionProperty):
     formula: typing.Optional[FormulaExpression]
 
 
-class FormulaPropertyInstance(BaseProperty):
+class FormulaPropertyInstance(BaseNotionProperty):
     formula: typing.Optional[Formula]
 
 
-class SelectOption(BaseModel):
-    id: str
-    name: str
-    color: typing.Optional[str] = ColorEnum.DEFAULT
-
-
-class OptionGroup(BaseModel):
-    options: typing.List[SelectOption]
-
-
-class SelectProperty(BaseProperty):
+class SelectProperty(BaseNotionProperty):
     select: typing.Optional[typing.Union[SelectOption, OptionGroup]]
 
 
-class MultiSelectProperty(BaseProperty):
+class MultiSelectProperty(BaseNotionProperty):
     multi_select: typing.Optional[typing.Union[typing.List[SelectOption], OptionGroup]]
 
 
-class Date(BaseModel):
-    start: typing.Optional[date]
-    end: typing.Optional[date] = None
-
-
-class DateProperty(BaseProperty):
+class DateProperty(BaseNotionProperty):
     date: dict
 
 
-class DatePropertyInstance(BaseProperty):
+class DatePropertyInstance(BaseNotionProperty):
     date: typing.Optional[Date]
 
 
-class CreatedTime(BaseProperty):
+class CreatedTime(BaseNotionProperty):
     created_time: typing.Union[datetime, dict]
 
 
-class File(BaseModel):
-    type: str
-    url: str
-    expiry_time: typing.Optional[datetime]
-
-
-class People(BaseModel):
-    id: str
-    name: str
+class People(BaseNotionProperty):
     avatar_url: typing.Optional[str] = None
     person: typing.Optional[typing.Dict[str, str]] = None
+    object: typing.Optional[str] = "user"
 
 
-class PeopleProperty(BaseProperty):
+class PeopleProperty(BaseNotionProperty):
     people: typing.Optional[typing.Union[typing.List[People], dict]]
 
 
-class TitleProperty(BaseProperty):
+class TitleProperty(BaseNotionProperty):
     title: typing.Union[typing.List[TextBlock], dict]
+
+
+class Icon(BaseTypeMultiValueNotionObject):
+    file: typing.Optional[File]
+    emoji: typing.Optional[IconEmoji]
+
+
+class CoverProperty(BaseTypeMultiValueNotionObject):
+    file: typing.Optional[File]
+    external: typing.Optional[External]

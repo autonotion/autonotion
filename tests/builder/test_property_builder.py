@@ -1,7 +1,7 @@
 import datetime
 import json
 from autonotion.models.blocks import TextBlock, TextBlockContent, Annotation
-from autonotion.models.builder import PropertyBuilder
+from autonotion.builder import PropertyBuilder
 from autonotion.models.properties import (
     CreatedTime,
     Date,
@@ -117,6 +117,7 @@ def test_property_builder_should_be_able_to_build_people_property():
             People(
                 id='id',
                 name='John Doe',
+                type='person',
                 avatar_url='https://gravatar.com/avatar/',
                 person={
                     'email': 'jondoe@autonotion.com'

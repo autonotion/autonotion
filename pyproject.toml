@@ -21,7 +21,7 @@ max-line-length = 99
 
 [tool.poe.tasks]
 test   = "pytest --cov=autonotion --cov-report html"
-serve-cov = "cd htmlcov && python -m http.server"
+serve-cov = "python -m http.server --directory htmlcov"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

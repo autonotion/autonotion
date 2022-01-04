@@ -1,5 +1,6 @@
-from typing import Any
+from typing import Any, List
 import requests
+from autonotion.filters.base import BaseNotionFilter
 
 from autonotion.models import Database, Page
 from autonotion.builder import PageBuilder, DatabaseBuilder
@@ -47,3 +48,12 @@ class NotionAPIClient(NotionClient):
         return DatabaseBuilder.build(
             self.get('databases/' + database_id)
         )
+
+    def query_database(self, database_id: str, filter: BaseNotionFilter) -> List[Page]:
+        return [
+            PageBuilder.build(page) for page in self.post(
+                'databases/' + database_id + '/query', {
+                    'filter': filter.dict()
+                }
+            )['results']
+        ]
